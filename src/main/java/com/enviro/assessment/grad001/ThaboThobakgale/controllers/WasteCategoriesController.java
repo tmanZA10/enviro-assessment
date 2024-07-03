@@ -4,11 +4,11 @@ import com.enviro.assessment.grad001.ThaboThobakgale.services.WasteManagementSer
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class WasteManagementController {
+class WasteCategoriesController {
 
     private final WasteManagementService service;
 
-    public WasteManagementController(WasteManagementService service) {
+    public WasteCategoriesController(WasteManagementService service) {
         this.service = service;
     }
 }
