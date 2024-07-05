@@ -8,6 +8,6 @@ public class Playful {
 
     public static void main(String[] args) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(new RecyclingTip(1,"dustbin")));;
+//        System.out.println(mapper.writeValueAsString(new WasteCategoryNoId("toix")));;
     }
 }
