@@ -1,7 +1,10 @@
 package com.enviro.assessment.grad001.ThaboThobakgale.controllers;
 
 import com.enviro.assessment.grad001.ThaboThobakgale.model.RecyclingTip;
+import com.enviro.assessment.grad001.ThaboThobakgale.model.WithId;
+import com.enviro.assessment.grad001.ThaboThobakgale.model.WithoutId;
 import com.enviro.assessment.grad001.ThaboThobakgale.services.RecyclingService;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
@@ -10,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,26 +27,31 @@ public class RecyclingTipsController {
     }
 
     @GetMapping("/recyclingtips")
-    public Iterable<RecyclingTip> getTips(){
+    public List<RecyclingTip> getTips(){
         return service.getTips();
     }
 
     @GetMapping("/recyclingtip/{id}")
+    @JsonView(WithoutId.class)
     public RecyclingTip getTips(@PathVariable Integer id){
+        if(id <= 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tip id cannot be less than 1");
         Optional<RecyclingTip> tipOptional = service.getTip(id);
-        if(tipOptional.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Tip id not found.");
+        if(tipOptional.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Tip id not found.");
         return tipOptional.get();
     }
 
     @PostMapping("/new/recyclingtip")
-    public void addNewTip(@RequestBody @Validated RecyclingTip tip){
+    @JsonView(WithId.class)
+    public RecyclingTip  addNewTip(@RequestBody @Validated RecyclingTip tip){
         service.addTip(tip);
+        return service.getByTip(tip.getTip());
     }
 
     @PutMapping("/update/recyclingtip")
-    public void updateTip(@RequestBody RecyclingTip tip){
+    public RecyclingTip updateTip(@RequestBody RecyclingTip tip){
         try{
             service.updateTip(tip);
+            return tip;
         }catch (IncorrectUpdateSemanticsDataAccessException x){
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "tip id not found");
         }

@@ -1,4 +1,4 @@
-create table if not exists RecyclingTips(
+    create table if not exists RECYCLING_TIPS(
     ID INT PRIMARY KEY AUTO_INCREMENT,
     TIP TEXT NOT NULL UNIQUE
 );

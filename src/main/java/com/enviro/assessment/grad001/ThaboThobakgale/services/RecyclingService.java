@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectUpdateSemanticsDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,12 +19,12 @@ public class RecyclingService {
 
     }
 
-    public Iterable<RecyclingTip> getTips(){
-        return repository.findAll();
+    public List<RecyclingTip> getTips(){
+        return repository.getAll();
     }
 
-    public void addTip(RecyclingTip tip){
-        repository.save(tip);
+    public int addTip(RecyclingTip tip){
+        return repository.save(tip);
     }
 
     public void updateTip(RecyclingTip tip) throws IncorrectUpdateSemanticsDataAccessException{
@@ -34,11 +35,15 @@ public class RecyclingService {
         }
     }
 
-    public void deleteTip(int id){
-        repository.deleteById(id);
+    public int deleteTip(int id){
+        return repository.deleteById(id);
     }
 
     public Optional<RecyclingTip> getTip(int id){
        return repository.findById(id);
+    }
+
+    public RecyclingTip getByTip(String tip){
+        return repository.getByTip(tip);
     }
 }
