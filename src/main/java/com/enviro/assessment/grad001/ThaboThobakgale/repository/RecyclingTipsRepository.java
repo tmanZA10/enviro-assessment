@@ -50,4 +50,14 @@ public class RecyclingTipsRepository{
         String sql = "SELECT * FROM RECYCLING_TIPS WHERE TIP = ?";
         return template.queryForObject(sql, new RecyclingTipMapper(),tip);
     }
+
+
+
+    public int update(RecyclingTip tip) {
+        String sql = "UPDATE RECYCLING_TIPS SET " +
+                "TIP = ? WHERE ID = ?";
+
+        return template.update(sql,tip.getTip(),tip.getId());
+
+    }
 }

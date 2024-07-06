@@ -27,12 +27,8 @@ public class RecyclingService {
         return repository.save(tip);
     }
 
-    public void updateTip(RecyclingTip tip) throws IncorrectUpdateSemanticsDataAccessException{
-        try{
-            repository.save(tip);
-        } catch (Exception e){
-            throw new IncorrectUpdateSemanticsDataAccessException("Could not find record in table");
-        }
+    public int updateTip(RecyclingTip tip){
+        return repository.update(tip);
     }
 
     public int deleteTip(int id){

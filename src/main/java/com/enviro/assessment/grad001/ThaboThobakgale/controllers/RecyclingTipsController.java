@@ -48,19 +48,17 @@ public class RecyclingTipsController {
     }
 
     @PutMapping("/update/recyclingtip")
-    public RecyclingTip updateTip(@RequestBody RecyclingTip tip){
-        try{
-            service.updateTip(tip);
-            return tip;
-        }catch (IncorrectUpdateSemanticsDataAccessException x){
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "tip id not found");
-        }
+    public RecyclingTip updateTip(@RequestBody @Validated RecyclingTip tip){
+        int lines = service.updateTip(tip);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return tip;
     }
 
     @DeleteMapping("/delete/recyclingtip/{id}")
     public void deleteTip(@PathVariable Integer id){
 
-        service.deleteTip(id);
+        int lines = service.deleteTip(id);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
     }
 }
