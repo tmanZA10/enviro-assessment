@@ -2,6 +2,7 @@ package com.enviro.assessment.grad001.ThaboThobakgale.controllers;
 
 import com.enviro.assessment.grad001.ThaboThobakgale.model.WasteCategory;
 //import com.enviro.assessment.grad001.ThaboThobakgale.model.WasteCategoryNoId;
+import com.enviro.assessment.grad001.ThaboThobakgale.model.WithId;
 import com.enviro.assessment.grad001.ThaboThobakgale.services.WasteManagementService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
@@ -27,15 +28,18 @@ class WasteCategoriesController {
 
 
     @PostMapping("/waste/new/category")
-    public void addWasteCategory(@RequestBody @Validated  WasteCategory category){
+    @JsonView(WithId.class)
+    public WasteCategory addWasteCategory(@RequestBody @Validated  WasteCategory category){
         service.addWasteCategory(category);
+        return service.getWasteCategory(category.getName());
     }
 
     @PutMapping("/waste/update/category")
+    @JsonView(WithId.class)
     public WasteCategory updateWasteCategory(@RequestBody @Validated WasteCategory category){
-        int linesUpdated = service.updateWasteCategory(category);
         if (category.getId() <=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        if (linesUpdated == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        int linesUpdated = service.updateWasteCategory(category);
+        if (linesUpdated == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         return category;
     }
     @DeleteMapping("/waste/category/delete/{id}")

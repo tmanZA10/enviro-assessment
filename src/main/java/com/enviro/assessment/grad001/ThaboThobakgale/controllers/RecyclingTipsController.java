@@ -48,7 +48,9 @@ public class RecyclingTipsController {
     }
 
     @PutMapping("/update/recyclingtip")
+    @JsonView(WithId.class)
     public RecyclingTip updateTip(@RequestBody @Validated RecyclingTip tip){
+        if (tip.getId() <=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         int lines = service.updateTip(tip);
         if (lines == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         return tip;

@@ -33,6 +33,10 @@ public class WasteManagementService {
 
     }
 
+    public WasteCategory getWasteCategory(String name){
+        return repository.getWasteCategoryByName(name);
+    }
+
     public List<Material> getMaterials(){
         return repository.getMaterials();
     }

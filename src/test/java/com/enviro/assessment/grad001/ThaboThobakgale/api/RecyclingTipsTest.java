@@ -1,4 +1,4 @@
-package com.enviro.assessment.grad001.ThaboThobakgale.api.recyclingtips;
+package com.enviro.assessment.grad001.ThaboThobakgale.api;
 
 import com.enviro.assessment.grad001.ThaboThobakgale.EnviroAssessmentApplication;
 import com.enviro.assessment.grad001.ThaboThobakgale.model.RecyclingTip;
