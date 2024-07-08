@@ -119,4 +119,17 @@ public class WasteManagementRepository {
         return template.update(sql,materialId);
     }
 
+    public Optional<Guideline> getGuideLine(String guideline){
+        String sql = "SELECT GUIDELINES.ID, MATERIALS.NAME AS MATERIAL_NAME, " +
+                    "GUIDELINES.GUIDELINE " +
+                    "FROM GUIDELINES JOIN MATERIALS ON " +
+                    "GUIDELINES.MATERIAL_ID = MATERIALS.ID " +
+                    "WHERE GUIDELINES.GUIDELINE = ?";
+        try{
+            return Optional.of(template.queryForObject(sql,new GuidelineMapper(),guideline));
+        } catch (EmptyResultDataAccessException x){
+            return Optional.empty();
+        }
+    }
+
 }

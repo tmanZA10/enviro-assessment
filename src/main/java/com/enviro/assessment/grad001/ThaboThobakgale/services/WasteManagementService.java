@@ -82,18 +82,24 @@ public class WasteManagementService {
     }
 
     public int addGuideline(Guideline guideline){
-        Material material = repository.getMaterialByName(guideline.getMaterial()).get();
-        return repository.addGuideline(material.getId(),guideline.getGuideline());
+        Optional<Material> material = repository.getMaterialByName(guideline.getMaterial());
+        if (material.isEmpty()) return -1;
+        return repository.addGuideline(material.get().getId(),guideline.getGuideline());
 
     }
 
     public int updateGuideline(Guideline guideline) {
-        Material material = repository.getMaterialByName(guideline.getMaterial()).get();
-        return repository.updateGuideline(material.getId(), guideline);
+        Optional<Material> material = repository.getMaterialByName(guideline.getMaterial());
+        if (material.isEmpty()) return 0;
+        return repository.updateGuideline(material.get().getId(), guideline);
     }
 
     public int deleteGuideline(int id){
         return repository.deleteGuideline(id);
+    }
+
+    public Guideline getGuideline(String guideline){
+        return repository.getGuideLine(guideline).get();
     }
 
 

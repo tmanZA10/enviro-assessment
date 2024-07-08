@@ -4,7 +4,10 @@ import com.enviro.assessment.grad001.ThaboThobakgale.model.Guideline;
 import com.enviro.assessment.grad001.ThaboThobakgale.model.Material;
 import com.enviro.assessment.grad001.ThaboThobakgale.model.WasteCategory;
 import com.enviro.assessment.grad001.ThaboThobakgale.services.WasteManagementService;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +32,24 @@ class GuidelinesController {
     }
 
     @PostMapping("/waste/new/guideline")
-    public void addWasteGuideline(@RequestBody Guideline guideline){
-        service.addGuideline(guideline);
+    public Guideline addWasteGuideline(@RequestBody @Validated Guideline guideline){
+
+        int lines = service.addGuideline(guideline);
+        if (lines==-1 ) throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return service.getGuideline(guideline.getGuideline());
     }
 
     @PutMapping("/waste/update/guideline")
-    public void updateWasteGuideline(@RequestBody Guideline guideline){
-        service.updateGuideline(guideline);
+    public Guideline updateWasteGuideline(@RequestBody @Validated Guideline guideline){
+        if (guideline.getId() <=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        int lines = service.updateGuideline(guideline);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return guideline;
     }
     @DeleteMapping("/waste/guideline/delete/{id}")
     public void deleteWasteGuideline(@PathVariable Integer id){
-        service.deleteGuideline(id);
+        if (id <=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        int lines = service.deleteGuideline(id);
+        if (lines ==0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }
