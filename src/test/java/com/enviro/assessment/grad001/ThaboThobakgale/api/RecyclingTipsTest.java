@@ -98,6 +98,12 @@ public class RecyclingTipsTest {
 
         response = Unirest.post(URL+"/new/recyclingtip")
                 .header("Content-Type", "application/json")
+                .body(newTip)
+                .asJson();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+
+        response = Unirest.post(URL+"/new/recyclingtip")
+                .header("Content-Type", "application/json")
                 .body("{}")
                 .asJson();
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
@@ -139,6 +145,10 @@ public class RecyclingTipsTest {
         HttpResponse<JsonNode> response = Unirest.delete(URL+"/delete/recyclingtip/1")
                 .asJson();
         assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+
+        response = Unirest.delete(URL+"/delete/recyclingtip/-11")
+                .asJson();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
 
         addToDb(newTip);
 

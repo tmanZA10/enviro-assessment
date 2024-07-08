@@ -30,8 +30,9 @@ class WasteCategoriesController {
     @PostMapping("/waste/new/category")
     @JsonView(WithId.class)
     public WasteCategory addWasteCategory(@RequestBody @Validated  WasteCategory category){
-        service.addWasteCategory(category);
-        return service.getWasteCategory(category.getName());
+        int lines = service.addWasteCategory(category);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return service.getWasteCategory(category.getName()).get();
     }
 
     @PutMapping("/waste/update/category")
@@ -44,6 +45,7 @@ class WasteCategoriesController {
     }
     @DeleteMapping("/waste/category/delete/{id}")
     public void deleteWasteCategory(@PathVariable Integer id){
+        if(id<=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         int linesUpdated = service.deleteWasteCategory(id);
         if (linesUpdated == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }

@@ -43,7 +43,8 @@ public class RecyclingTipsController {
     @PostMapping("/new/recyclingtip")
     @JsonView(WithId.class)
     public RecyclingTip  addNewTip(@RequestBody @Validated RecyclingTip tip){
-        service.addTip(tip);
+        int lines = service.addTip(tip);
+        if (lines ==0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         return service.getByTip(tip.getTip());
     }
 
@@ -58,7 +59,7 @@ public class RecyclingTipsController {
 
     @DeleteMapping("/delete/recyclingtip/{id}")
     public void deleteTip(@PathVariable Integer id){
-
+        if(id<=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         int lines = service.deleteTip(id);
         if (lines == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 

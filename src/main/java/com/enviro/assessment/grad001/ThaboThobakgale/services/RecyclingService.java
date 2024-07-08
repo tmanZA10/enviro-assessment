@@ -24,7 +24,11 @@ public class RecyclingService {
     }
 
     public int addTip(RecyclingTip tip){
-        return repository.save(tip);
+        try{
+            return repository.save(tip);
+        }catch (DataAccessException x){
+            return 0;
+        }
     }
 
     public int updateTip(RecyclingTip tip){

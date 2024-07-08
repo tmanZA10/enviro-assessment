@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class MaterialsController {
@@ -26,22 +27,32 @@ public class MaterialsController {
 
     @GetMapping("/waste/materials/lookup/{material}")
     public Material getMaterials(@PathVariable String material){
-        return service.lookUpMaterial(material);
+        Optional<Material> result = service.lookUpMaterial(material);
+        if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return result.get();
     }
 
 
     @PostMapping("/waste/new/material")
-    public void addWasteCategory(@RequestBody @Validated Material material){
-        service.addMaterial(material);
+    public Material addWasteCategory(@RequestBody @Validated Material material){
+        int lines = service.addMaterial(material);
+        if (lines == -1) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return service.lookUpMaterial(material.getName()).get();
     }
 
     @PutMapping("/waste/update/material")
-    public void updateWasteCategory(@RequestBody @Validated Material material){
+    public Material updateWasteCategory(@RequestBody @Validated Material material){
+        if (material.getId() <=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         int rows = service.updateMaterial(material);
+        if (rows == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return material;
 
     }
     @DeleteMapping("/waste/material/delete/{id}")
     public void deleteWasteCategory(@PathVariable Integer id){
-        service.deleteMaterial(id);
+        if(id<=0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        int lines = service.deleteMaterial(id);
+        if (lines == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }

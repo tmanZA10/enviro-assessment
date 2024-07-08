@@ -6,10 +6,12 @@ import com.enviro.assessment.grad001.ThaboThobakgale.model.WasteCategory;
 import com.enviro.assessment.grad001.ThaboThobakgale.repository.mappers.GuidelineMapper;
 import com.enviro.assessment.grad001.ThaboThobakgale.repository.mappers.MaterialMapper;
 import com.enviro.assessment.grad001.ThaboThobakgale.repository.mappers.WasteCategoryMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WasteManagementRepository {
@@ -48,9 +50,13 @@ public class WasteManagementRepository {
         return template.query(sql, new MaterialMapper());
     }
 
-    public WasteCategory getWasteCategoryByName(String name){
+    public Optional<WasteCategory> getWasteCategoryByName(String name){
         String sql = "SELECT * FROM WASTE_CATEGORIES WHERE NAME = ?";
-        return template.queryForObject(sql, new WasteCategoryMapper(),name);
+        try{
+            return Optional.of(template.queryForObject(sql, new WasteCategoryMapper(),name));
+        }catch (EmptyResultDataAccessException x){
+            return Optional.empty();
+        }
     }
 
     public int addMaterial(int wasteId, String name){
@@ -68,13 +74,17 @@ public class WasteManagementRepository {
         return template.update(sql,id);
     }
 
-    public Material getMaterialByName(String material){
+    public Optional<Material> getMaterialByName(String material){
         String sql = "SELECT" +
                 " MATERIALS.ID, WASTE_CATEGORIES.NAME AS CATEGORY, MATERIALS.NAME" +
                 " FROM MATERIALS JOIN WASTE_CATEGORIES" +
                 " ON MATERIALS.WASTE_ID = WASTE_CATEGORIES.ID " +
                 "WHERE MATERIALS.NAME = ?";
-        return template.queryForObject(sql,new MaterialMapper(),material);
+        try{
+            return Optional.of(template.queryForObject(sql,new MaterialMapper(),material));
+        }catch (EmptyResultDataAccessException x){
+            return Optional.empty();
+        }
     }
 
     public List<Guideline> getMaterialGuideLines(String material) {

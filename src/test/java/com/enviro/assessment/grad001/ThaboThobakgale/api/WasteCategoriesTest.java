@@ -74,6 +74,12 @@ public class WasteCategoriesTest {
 
         response = Unirest.post(URL+"/waste/new/category")
                 .header("Content-Type", "application/json")
+                .body(category)
+                .asJson();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+
+        response = Unirest.post(URL+"/waste/new/category")
+                .header("Content-Type", "application/json")
                 .body("{}")
                 .asJson();
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
@@ -125,7 +131,7 @@ public class WasteCategoriesTest {
 
         response = Unirest.delete(URL+"/waste/category/delete/-1")
                 .asJson();
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
 
         addToDb(category);
 

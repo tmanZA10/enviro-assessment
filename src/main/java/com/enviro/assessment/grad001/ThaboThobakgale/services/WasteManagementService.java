@@ -4,9 +4,11 @@ import com.enviro.assessment.grad001.ThaboThobakgale.model.Guideline;
 import com.enviro.assessment.grad001.ThaboThobakgale.model.Material;
 import com.enviro.assessment.grad001.ThaboThobakgale.model.WasteCategory;
 import com.enviro.assessment.grad001.ThaboThobakgale.repository.WasteManagementRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WasteManagementService {
@@ -21,7 +23,11 @@ public class WasteManagementService {
     }
 
     public int addWasteCategory(WasteCategory wasteCategoryNoId){
-        return repository.addWasteCategory(wasteCategoryNoId);
+        try{
+            return repository.addWasteCategory(wasteCategoryNoId);
+        }catch (DataAccessException x){
+            return 0;
+        }
     }
 
     public int updateWasteCategory(WasteCategory wasteCategory) {
@@ -33,7 +39,7 @@ public class WasteManagementService {
 
     }
 
-    public WasteCategory getWasteCategory(String name){
+    public Optional<WasteCategory> getWasteCategory(String name){
         return repository.getWasteCategoryByName(name);
     }
 
@@ -42,21 +48,27 @@ public class WasteManagementService {
     }
 
     public int addMaterial(Material material){
-        WasteCategory waste = repository.getWasteCategoryByName(material.getWaste_category());
-        return repository.addMaterial(waste.getId(),material.getName());
+        Optional<WasteCategory> waste = repository.getWasteCategoryByName(material.getWaste_category());
+        if (waste.isEmpty()) return -1;
+        try{
+            return repository.addMaterial(waste.get().getId(), material.getName());
+        }catch (DataAccessException x){
+            return 0;
+        }
 
     }
 
     public int updateMaterial(Material material) {
-        WasteCategory category = repository.getWasteCategoryByName(material.getWaste_category());
-        return repository.updateMaterial(material, category.getId());
+        Optional<WasteCategory> category = repository.getWasteCategoryByName(material.getWaste_category());
+        if (category.isEmpty()) return 0;
+        return repository.updateMaterial(material, category.get().getId());
     }
 
     public int deleteMaterial(int id){
         return repository.deleteMaterial(id);
     }
 
-    public Material lookUpMaterial(String material){
+    public Optional<Material> lookUpMaterial(String material){
         return repository.getMaterialByName(material);
     }
 
@@ -70,13 +82,13 @@ public class WasteManagementService {
     }
 
     public int addGuideline(Guideline guideline){
-        Material material = repository.getMaterialByName(guideline.getMaterial());
+        Material material = repository.getMaterialByName(guideline.getMaterial()).get();
         return repository.addGuideline(material.getId(),guideline.getGuideline());
 
     }
 
     public int updateGuideline(Guideline guideline) {
-        Material material = repository.getMaterialByName(guideline.getMaterial());
+        Material material = repository.getMaterialByName(guideline.getMaterial()).get();
         return repository.updateGuideline(material.getId(), guideline);
     }
 
